@@ -8,23 +8,23 @@ interface EmptyStateProps {
 const suggestions = [
   {
     icon: MessageSquare,
-    title: "Explain quantum computing",
-    subtitle: "in simple terms"
+    title: "解释量子计算",
+    subtitle: "用简单的语言"
   },
   {
     icon: Code,
-    title: "Write a Python function",
-    subtitle: "to reverse a string"
+    title: "写一个 Python 函数",
+    subtitle: "用于反转字符串"
   },
   {
     icon: Lightbulb,
-    title: "Give me ideas for",
-    subtitle: "a weekend project"
+    title: "给我一些点子",
+    subtitle: "关于周末的小项目"
   },
   {
     icon: HelpCircle,
-    title: "How do I center a div",
-    subtitle: "in CSS?"
+    title: "如何在 CSS 中",
+    subtitle: "垂直居中一个 div？"
   }
 ];
 
@@ -36,10 +36,10 @@ export const EmptyState: FC<EmptyStateProps> = ({ onSendMessage }) => {
           <MessageSquare size={32} className="text-white" />
         </div>
         <h1 className="text-2xl font-semibold text-chat-text mb-2">
-          How can I help you today?
+          有什么我可以帮你的吗？
         </h1>
         <p className="text-chat-text-secondary">
-          Ask me anything - I'm here to help with questions, creative tasks, coding, and more.
+          随便问点什么 —— 我可以帮你解答问题、激发创意、编写代码等等。
         </p>
       </div>
 

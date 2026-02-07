@@ -32,7 +32,7 @@ export const ChatMessage: FC<ChatMessageProps> = ({ message }) => {
                   <div className="w-2 h-2 bg-chat-text-secondary rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
                   <div className="w-2 h-2 bg-chat-text-secondary rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />
                 </div>
-                <span className="text-chat-text-secondary text-sm">Thinking...</span>
+                <span className="text-chat-text-secondary text-sm">思考中...</span>
               </div>
             ) : (
               <div className="prose prose-invert max-w-none">

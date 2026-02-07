@@ -55,7 +55,7 @@ export const ChatInput: FC<ChatInputProps> = ({
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Send a message..."
+              placeholder="发送消息..."
               className="w-full bg-transparent text-chat-text placeholder-chat-text-secondary p-4 pr-12 resize-none outline-none max-h-32 min-h-[24px]"
               rows={1}
               disabled={isLoading}
@@ -91,7 +91,7 @@ export const ChatInput: FC<ChatInputProps> = ({
           
           <div className="flex justify-center mt-2">
             <p className="text-xs text-chat-text-secondary">
-              Press Enter to send, Shift + Enter for new line
+              按 Enter 发送，Shift + Enter 换行
             </p>
           </div>
         </form>

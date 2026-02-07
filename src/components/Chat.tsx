@@ -3,6 +3,7 @@ import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
 import { EmptyState } from './EmptyState';
 import { Message } from '../types/chat';
+import { sendMessageToAI } from '../services/ai';
 
 export const Chat: FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -16,33 +17,6 @@ export const Chat: FC = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  const generateResponse = async (userMessage: string): Promise<string> => {
-    // Simulate API call with realistic delay
-    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
-    
-    // Mock responses based on user input
-    const responses = [
-      "That's an interesting question! Let me think about that for a moment.",
-      "I understand what you're asking. Here's my perspective on that topic.",
-      "Great question! This is actually a complex topic with several aspects to consider.",
-      "I'd be happy to help you with that. Let me break this down for you.",
-      "That's a thoughtful inquiry. Based on my understanding, here's what I can tell you.",
-    ];
-    
-    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-    
-    // Add some context-aware responses
-    if (userMessage.toLowerCase().includes('code') || userMessage.toLowerCase().includes('programming')) {
-      return `Here's a programming-related response: ${randomResponse}\n\nFor coding questions, I can help with various programming languages, debugging, best practices, and more. Feel free to share your specific code or describe what you're trying to accomplish!`;
-    }
-    
-    if (userMessage.toLowerCase().includes('explain') || userMessage.toLowerCase().includes('what is')) {
-      return `Let me explain that concept: ${randomResponse}\n\nI'll break this down into simple terms and provide examples where helpful. Is there a specific aspect you'd like me to focus on?`;
-    }
-    
-    return `${randomResponse}\n\nI'm here to help with a wide range of topics including programming, creative writing, analysis, math, and general questions. What would you like to explore further?`;
-  };
 
   const handleSendMessage = async (content: string) => {
     const userMessage: Message = {
@@ -60,11 +34,19 @@ export const Chat: FC = () => {
       isLoading: true,
     };
 
-    setMessages(prev => [...prev, userMessage, loadingMessage]);
+    // Optimistically update UI
+    const newHistory = [...messages, userMessage];
+    setMessages([...newHistory, loadingMessage]);
     setIsLoading(true);
 
     try {
-      const response = await generateResponse(content);
+      // Convert to API format
+      const apiMessages = newHistory.map(msg => ({
+        role: msg.role,
+        content: msg.content
+      }));
+
+      const response = await sendMessageToAI(apiMessages);
       
       setMessages(prev => 
         prev.map(msg => 
@@ -73,13 +55,17 @@ export const Chat: FC = () => {
             : msg
         )
       );
-    } catch (error) {
+    } catch (error: any) {
+      const errorMessage = error.message?.includes('API Key') 
+        ? error.message 
+        : '抱歉，我遇到了一些错误。请检查您的网络或 API 配置。';
+        
       setMessages(prev => 
         prev.map(msg => 
           msg.id === loadingMessage.id 
             ? { 
                 ...msg, 
-                content: 'Sorry, I encountered an error while processing your request. Please try again.', 
+                content: errorMessage, 
                 isLoading: false 
               }
             : msg
@@ -95,7 +81,7 @@ export const Chat: FC = () => {
     setMessages(prev => 
       prev.map(msg => 
         msg.isLoading 
-          ? { ...msg, content: 'Response generation stopped.', isLoading: false }
+          ? { ...msg, content: '响应已停止。', isLoading: false }
           : msg
       )
     );
@@ -106,7 +92,7 @@ export const Chat: FC = () => {
       {/* Header */}
       <div className="border-b border-chat-border/20 bg-chat-bg">
         <div className="max-w-3xl mx-auto p-4">
-          <h1 className="text-lg font-semibold text-chat-text">AI Assistant</h1>
+          <h1 className="text-lg font-semibold text-chat-text">AI 助手</h1>
         </div>
       </div>
 
