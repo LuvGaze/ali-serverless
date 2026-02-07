@@ -5,11 +5,11 @@ export const API_CONFIG = {
   baseURL: 'https://openrouter.ai/api/v1',
   
   // Common OpenRouter models:
-  // - 'google/gemini-2.0-flash-lite-preview-02-05:free' (Free, Fast)
-  // - 'deepseek/deepseek-r1:free' (Free, High Logic)
+  // - 'deepseek/deepseek-r1-0528:free' (Free, High Logic)
+  // - 'meta-llama/llama-3.3-70b-instruct:free' (Free, Powerful)
+  // - 'google/gemma-3-27b-it:free' (Free, Google's latest)
   // - 'openai/gpt-4o' (Paid, Powerful)
-  // - 'anthropic/claude-3.5-sonnet' (Paid, Balanced)
-  model: 'google/gemini-2.0-flash-lite-preview-02-05:free',
+  model: 'deepseek/deepseek-r1-0528:free',
   
   // OpenRouter specific headers (optional but recommended)
   siteUrl: 'http://localhost:5173', 
@@ -42,8 +42,17 @@ async function generateMockResponse(userMessage: string): Promise<string> {
 }
 
 export async function sendMessageToAI(messages: { role: string; content: string }[]) {
+  const apiKey = API_CONFIG.apiKey?.trim();
+  
+  // Debug log to check if key is loaded (prints first few chars only for security)
+  console.log('AI Service Config:', { 
+    hasKey: !!apiKey, 
+    keyPrefix: apiKey ? apiKey.substring(0, 8) + '...' : 'none',
+    model: API_CONFIG.model 
+  });
+
   // Check if API Key is missing
-  if (!API_CONFIG.apiKey) {
+  if (!apiKey) {
     console.warn('No API Key found. Using Demo/Mock mode.');
     // Get the last user message to generate context-aware mock response
     const lastUserMessage = messages[messages.length - 1]?.content || '';
@@ -55,7 +64,7 @@ export async function sendMessageToAI(messages: { role: string; content: string 
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${API_CONFIG.apiKey}`,
+        'Authorization': `Bearer ${apiKey}`,
         'HTTP-Referer': API_CONFIG.siteUrl, // OpenRouter specific
         'X-Title': API_CONFIG.siteName,     // OpenRouter specific
       },
