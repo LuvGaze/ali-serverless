@@ -1,7 +1,7 @@
 export const API_CONFIG = {
   // Replace with your OpenRouter API Key
   // Get one at: https://openrouter.ai/keys
-  apiKey: '', 
+  apiKey: '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', 
   baseURL: 'https://openrouter.ai/api/v1',
   
   // Common OpenRouter models:
